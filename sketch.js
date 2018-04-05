@@ -2,10 +2,10 @@ var Architect = synaptic.Architect;
 
 
 function setup() {
-	createCanvas(800, 600);
+	createCanvas(1280, 720);
 	foodList = new Array()
 	populacao = new Array()
-	for (let index = 0; index < 30; index++) {
+	for (let index = 0; index < 50; index++) {
 		foodList.push(new Food(random(width), random(height), 20, 20))
 	}
 	for (let index = 0; index < 5; index++) {
@@ -23,6 +23,18 @@ function draw() {
 		p.live()
 	});
 }
+
+
+function Genetics(){
+	this.population;
+	this.foodStock;
+	this.diferentiation;
+	this.mutation;
+	this.selection;
+}
+
+
+
 
 function Food(x, y, h, w) {
 	this.x = x;
@@ -52,6 +64,7 @@ function playerObj(color, size, speed) {
 	this.output = new Array();
 	this.detection = new Array();
 	this.belly = 1000;
+	this.dead = false;
 	this.sensor0X;
 	this.sensor0Y;
 	this.sensor45X;
@@ -74,8 +87,9 @@ function playerObj(color, size, speed) {
 		this.drawSensors()
 		this.drawBeing()
 		this.detection(foodList)
-		this.drawBelly()
+		this.drawBellyAndFitness()
 		this.belly--;
+		this.fitness++;
 		
 		//loop around the edges
 		if (this.x < 0) {
@@ -90,6 +104,8 @@ function playerObj(color, size, speed) {
 		if (this.y > height) {
 			this.y = 0;
 		}
+	}else{
+		this.dead = true;
 	}
 		
 		
@@ -119,8 +135,11 @@ function playerObj(color, size, speed) {
 		ellipse(this.x, this.y, this.size, this.size);
 	}
 
-	this.drawBelly = function () {
-		text(this.belly, this.x - 3, this.y - 30)
+	this.drawBellyAndFitness = function () {
+		fill("red");
+		text(this.belly, this.x - 30, this.y - 30)
+		fill("blue");
+		text(this.fitness, this.x + 30, this.y - 30)
 	}
 
 	this.collide = function (population, foodList) {
