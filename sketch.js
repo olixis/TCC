@@ -81,6 +81,10 @@ function recoverBrain(brain) {
 	return Network.fromJSON(brain)
 }
 
+function relatorio(deadPop) {
+	console.log(deadPop)
+}
+
 function Genetics() {
 	this.offspringList = new Array()
 	this.generation = 1
@@ -95,10 +99,13 @@ function Genetics() {
 			this.mutateOffsprings(1)
 			population = this.offspringList;
 			var elderGod = new Specimen('yellow', 50, 3)
+			elderGod.generation = fittestTwo[0].generation
 			elderGod.brain = fittestTwo[0].brain
-			console.log(JSON.stringify(elderGod.brain.toJSON()))
+			elderGod.parents = fittestTwo[0].parents
+			//console.log(JSON.stringify(elderGod.brain.toJSON()))
 			//elderGod.brain = recoverBrain({"neurons":[{"trace":{"elegibility":{},"extended":{}},"state":0,"old":0,"activation":0,"bias":0,"layer":"input","squash":"HLIM"},{"trace":{"elegibility":{},"extended":{}},"state":0,"old":0,"activation":0,"bias":0,"layer":"input","squash":"HLIM"},{"trace":{"elegibility":{},"extended":{}},"state":0,"old":0,"activation":0,"bias":0,"layer":"input","squash":"HLIM"},{"trace":{"elegibility":{},"extended":{}},"state":-0.01844041071383655,"old":-0.01844041071383655,"activation":0,"bias":-0.01844041071383655,"layer":0,"squash":"HLIM"},{"trace":{"elegibility":{},"extended":{}},"state":-0.011254720664056486,"old":-0.011254720664056486,"activation":0,"bias":-0.011254720664056486,"layer":0,"squash":"HLIM"},{"trace":{"elegibility":{},"extended":{}},"state":-0.004196252290733643,"old":-0.004196252290733643,"activation":0,"bias":-0.004196252290733643,"layer":0,"squash":"HLIM"},{"trace":{"elegibility":{},"extended":{}},"state":0.05090293587883102,"old":0.05090293587883102,"activation":1,"bias":0.05090293587883102,"layer":"output","squash":"HLIM"},{"trace":{"elegibility":{},"extended":{}},"state":0.08545440430878237,"old":0.08545440430878237,"activation":1,"bias":0.08545440430878237,"layer":"output","squash":"HLIM"},{"trace":{"elegibility":{},"extended":{}},"state":0.030751741434036084,"old":0.030751741434036084,"activation":1,"bias":0.030751741434036084,"layer":"output","squash":"HLIM"}],"connections":[{"from":0,"to":3,"weight":-0.0974004876481987,"gater":null},{"from":0,"to":4,"weight":0.05938341019152091,"gater":null},{"from":0,"to":5,"weight":0.08770373718684543,"gater":null},{"from":1,"to":3,"weight":0.06824361533909648,"gater":null},{"from":1,"to":4,"weight":-0.04678050043565887,"gater":null},{"from":1,"to":5,"weight":-0.05054667339177166,"gater":null},{"from":2,"to":3,"weight":-0.04787666303111498,"gater":null},{"from":2,"to":4,"weight":-0.03206959584673959,"gater":null},{"from":2,"to":5,"weight":0.06231609613443659,"gater":null},{"from":3,"to":6,"weight":0.048451658649525525,"gater":null},{"from":3,"to":7,"weight":0.07983157752305867,"gater":null},{"from":3,"to":8,"weight":0.007060385219618492,"gater":null},{"from":4,"to":6,"weight":-0.0316625223063451,"gater":null},{"from":4,"to":7,"weight":-0.06435876443960438,"gater":null},{"from":4,"to":8,"weight":0.045805773000450134,"gater":null},{"from":5,"to":6,"weight":-0.09048067305078784,"gater":null},{"from":5,"to":7,"weight":-0.06433505671877829,"gater":null},{"from":5,"to":8,"weight":-0.037224294341365025,"gater":null}]})
 			population[0] = elderGod
+			relatorio(deadPopulation);
 			deadPopulation = new Array();
 			foodList = new Array();
 			generateFood(50)
@@ -126,6 +133,8 @@ function Genetics() {
 		var offspringBrain = Network.fromJSON(offspringDNA);
 		var offspring = new Specimen('green', 50, 3);
 		offspring.brain = offspringBrain;
+		offspring.parents = fittest
+		offspring.generation = this.generation + 1;
 		return offspring;
 	}
 
@@ -134,7 +143,9 @@ function Genetics() {
 			this.offspringList.pop()
 		}
 		for (let index = 0; index < numReplace; index++) {
-			this.offspringList.push(new Specimen('purple', 50, 3))
+			var xmen = new Specimen('purple', 50, 3)
+			xmen.generation = this.generation + 1
+			this.offspringList.push(xmen)
 		}
 	}
 	this.generateNewPop = function () {}
@@ -180,6 +191,8 @@ function Specimen(color, size, speed) {
 	this.output = new Array();
 	this.detection = new Array();
 	this.belly = 300;
+	this.generation = 1;
+	this.parents = []
 	this.dead = false;
 	this.sensor0X;
 	this.sensor0Y;
@@ -193,7 +206,7 @@ function Specimen(color, size, speed) {
 	this.size = size;
 	//this.angle = getRandomInt(0, 90);
 	this.angle = 0
-	this.scalar = size + 20;
+	this.scalar = size + 200;
 	this.fitness = 0;
 
 
@@ -234,17 +247,17 @@ function Specimen(color, size, speed) {
 		this.sensor0X = this.x + Math.cos(this.angle) * this.scalar;
 		this.sensor0Y = this.y + Math.sin(this.angle) * this.scalar;
 		strokeWeight(1);
-		stroke("red");
+		stroke("white");
 		line(this.x, this.y, this.sensor0X, this.sensor0Y)
 		this.sensor45X = this.x + Math.cos(this.angle + 0.785398) * this.scalar;
 		this.sensor45Y = this.y + Math.sin(this.angle + 0.785398) * this.scalar;
 		strokeWeight(1);
-		stroke("blue");
+		stroke("white");
 		line(this.x, this.y, this.sensor45X, this.sensor45Y)
 		this.sensor315X = this.x + Math.cos(this.angle - 0.785398) * this.scalar;
 		this.sensor315Y = this.y + Math.sin(this.angle - 0.785398) * this.scalar;
 		strokeWeight(1);
-		stroke("green");
+		stroke("white");
 		line(this.x, this.y, this.sensor315X, this.sensor315Y)
 	}
 
@@ -270,58 +283,59 @@ function Specimen(color, size, speed) {
 			var sensor1 = collideLineCircle(this.x, this.y, this.sensor315X, this.sensor315Y, food.x, food.y, food.w);
 			var sensor2 = collideLineCircle(this.x, this.y, this.sensor0X, this.sensor0Y, food.x, food.y, food.w);
 			var sensor3 = collideLineCircle(this.x, this.y, this.sensor45X, this.sensor45Y, food.x, food.y, food.w);
-			if (sensor1 ||
-				sensor2 ||
-				sensor3) {
-				if (sensor1 && !sensor2 && !sensor3) {
-					speedFix++
-					this.synapse([1, 0, 0], speedFix)
-				}
-				if (sensor2 && !sensor1 && !sensor3) {
-					speedFix++
-					this.synapse([0, 1, 0], speedFix)
-				}
-				if (sensor3 && !sensor1 && !sensor2) {
-					speedFix++
-					this.synapse([0, 0, 1], speedFix)
-				}
-				if (sensor1 && sensor2) {
-					speedFix++
-					this.synapse([1, 1, 0], speedFix)
-				}
-				if (sensor1 && sensor3) {
-					speedFix++
-					this.synapse([1, 0, 1], speedFix)
-				}
-				if (sensor2 && sensor3) {
-					speedFix++
-					this.synapse([0, 1, 1], speedFix)
-				}
-				if (sensor1 && sensor2 && sensor3) {
-					speedFix++
-					this.synapse([1, 1, 1], speedFix)
-				}
+			if (sensor1 && !sensor2 && !sensor3) {
+				speedFix++
+				this.synapse([1, 0, 0], speedFix)
 			}
+			if (sensor2 && !sensor1 && !sensor3) {
+				speedFix++
+				this.synapse([0, 1, 0], speedFix)
+			}
+			if (sensor3 && !sensor1 && !sensor2) {
+				speedFix++
+				this.synapse([0, 0, 1], speedFix)
+			}
+			if (sensor1 && sensor2) {
+				speedFix++
+				this.synapse([1, 1, 0], speedFix)
+			}
+			if (sensor1 && sensor3) {
+				speedFix++
+				this.synapse([1, 0, 1], speedFix)
+			}
+			if (sensor2 && sensor3) {
+				speedFix++
+				this.synapse([0, 1, 1], speedFix)
+			}
+			if (sensor1 && sensor2 && sensor3) {
+				speedFix++
+				this.synapse([1, 1, 1], speedFix)
+			}
+			if (!sensor1 && !sensor2 && !sensor3) {
+				speedFix++
+				this.synapse([0, 0, 0], speedFix)
+			}
+
 			if (collideCircleCircle(this.x, this.y, this.size, food.x, food.y, food.h)) {
 				food.eaten = true;
 				this.belly += 100;
 			}
 		}
-		this.synapse([0, 0, 0], speedFix)
+		//this.synapse([0, 0, 0], speedFix)
 
 	}
 
 	this.synapse = function (input, speedFix) {
 		this.output = this.brain.activate(input)
 		if (this.output[0] == 1) {
-			this.y += (Math.sin(this.angle) * this.speed) / speedFix
-			this.x += (Math.cos(this.angle) * this.speed) / speedFix
+			this.y += (Math.sin(this.angle) * this.speed) / foodList.length
+			this.x += (Math.cos(this.angle) * this.speed) / foodList.length
 		}
 		if (this.output[1] == 1) {
-			this.angle += this.swordSpeed / speedFix;
+			this.angle += this.swordSpeed;
 		}
 		if (this.output[2] == 1) {
-			this.angle -= this.swordSpeed / speedFix;
+			this.angle -= this.swordSpeed;
 		}
 	}
 
