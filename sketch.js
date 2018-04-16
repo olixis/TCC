@@ -81,8 +81,27 @@ function recoverBrain(brain) {
 	return Network.fromJSON(brain)
 }
 
-function relatorio(deadPop) {
-	console.log(deadPop)
+function relatorio(deadPop,generation,fittestTwo) {
+	var relatorio = {};
+	relatorio.generation = generation;
+	relatorio.date = new Date();
+	relatorio.generationBest = new Array();
+	if(fittestTwo[0].parents.length === 2){
+		relatorio.generationBest.push({best1Fitness:fittestTwo[0].fitness,best1Parents:{parent1Fitness:fittestTwo[0].parents[0].fitness,parent1Generation:fittestTwo[0].parents[0].generation,parent2Fitness:fittestTwo[0].parents[1].fitness,parent2Generation:fittestTwo[0].parents[1].generation}})		
+	}else{
+		relatorio.generationBest.push({best1Fitness:fittestTwo[0].fitness})				
+	}
+	if(fittestTwo[1].parents.length === 2){
+		relatorio.generationBest.push({best2Fitness:fittestTwo[1].fitness,best2Parents:{parent1Fitness:fittestTwo[1].parents[0].fitness,parent1Generation:fittestTwo[1].parents[0].generation,parent2Fitness:fittestTwo[1].parents[1].fitness,parent2Generation:fittestTwo[1].parents[1].generation}})		
+	}else{
+		relatorio.generationBest.push({best2Fitness:fittestTwo[1].fitness})				
+	}
+
+	$.ajax( { url: "https://api.mlab.com/api/1/databases/tcc/collections/report?apiKey="+APIKEYS.MONGO_KEY,
+		  data: JSON.stringify( relatorio ),
+		  type: "POST",
+		  contentType: "application/json" } );
+	//console.log(deadPop)
 }
 
 function Genetics() {
@@ -105,7 +124,7 @@ function Genetics() {
 			//console.log(JSON.stringify(elderGod.brain.toJSON()))
 			//elderGod.brain = recoverBrain({"neurons":[{"trace":{"elegibility":{},"extended":{}},"state":0,"old":0,"activation":0,"bias":0,"layer":"input","squash":"HLIM"},{"trace":{"elegibility":{},"extended":{}},"state":0,"old":0,"activation":0,"bias":0,"layer":"input","squash":"HLIM"},{"trace":{"elegibility":{},"extended":{}},"state":0,"old":0,"activation":0,"bias":0,"layer":"input","squash":"HLIM"},{"trace":{"elegibility":{},"extended":{}},"state":-0.01844041071383655,"old":-0.01844041071383655,"activation":0,"bias":-0.01844041071383655,"layer":0,"squash":"HLIM"},{"trace":{"elegibility":{},"extended":{}},"state":-0.011254720664056486,"old":-0.011254720664056486,"activation":0,"bias":-0.011254720664056486,"layer":0,"squash":"HLIM"},{"trace":{"elegibility":{},"extended":{}},"state":-0.004196252290733643,"old":-0.004196252290733643,"activation":0,"bias":-0.004196252290733643,"layer":0,"squash":"HLIM"},{"trace":{"elegibility":{},"extended":{}},"state":0.05090293587883102,"old":0.05090293587883102,"activation":1,"bias":0.05090293587883102,"layer":"output","squash":"HLIM"},{"trace":{"elegibility":{},"extended":{}},"state":0.08545440430878237,"old":0.08545440430878237,"activation":1,"bias":0.08545440430878237,"layer":"output","squash":"HLIM"},{"trace":{"elegibility":{},"extended":{}},"state":0.030751741434036084,"old":0.030751741434036084,"activation":1,"bias":0.030751741434036084,"layer":"output","squash":"HLIM"}],"connections":[{"from":0,"to":3,"weight":-0.0974004876481987,"gater":null},{"from":0,"to":4,"weight":0.05938341019152091,"gater":null},{"from":0,"to":5,"weight":0.08770373718684543,"gater":null},{"from":1,"to":3,"weight":0.06824361533909648,"gater":null},{"from":1,"to":4,"weight":-0.04678050043565887,"gater":null},{"from":1,"to":5,"weight":-0.05054667339177166,"gater":null},{"from":2,"to":3,"weight":-0.04787666303111498,"gater":null},{"from":2,"to":4,"weight":-0.03206959584673959,"gater":null},{"from":2,"to":5,"weight":0.06231609613443659,"gater":null},{"from":3,"to":6,"weight":0.048451658649525525,"gater":null},{"from":3,"to":7,"weight":0.07983157752305867,"gater":null},{"from":3,"to":8,"weight":0.007060385219618492,"gater":null},{"from":4,"to":6,"weight":-0.0316625223063451,"gater":null},{"from":4,"to":7,"weight":-0.06435876443960438,"gater":null},{"from":4,"to":8,"weight":0.045805773000450134,"gater":null},{"from":5,"to":6,"weight":-0.09048067305078784,"gater":null},{"from":5,"to":7,"weight":-0.06433505671877829,"gater":null},{"from":5,"to":8,"weight":-0.037224294341365025,"gater":null}]})
 			population[0] = elderGod
-			relatorio(deadPopulation);
+			relatorio(deadPopulation,this.generation,fittestTwo);
 			deadPopulation = new Array();
 			foodList = new Array();
 			generateFood(50)
