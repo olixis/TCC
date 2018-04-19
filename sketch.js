@@ -102,7 +102,7 @@ function relatorio(elderGod,generation,fittestTwo) {
 		relatorio.generationBest.push({best2Fitness:fittestTwo[1].fitness})				
 	}
 
-	$.ajax( { url: "https://api.mlab.com/api/1/databases/tcc/collections/report?apiKey="+APIKEYS.MONGO_KEY,
+	$.ajax( { url: "https://api.mlab.com/api/1/databases/tcc/collections/reporthome?apiKey="+APIKEYS.MONGO_KEY,
 		  data: JSON.stringify( relatorio ),
 		  type: "POST",
 		  contentType: "application/json" } );
