@@ -1,9 +1,37 @@
+var dataGrafico = (function() {
+    var json = null;
+    $.ajax({
+        'async': false,
+        'global': false,
+        'url': "/tcc.reporthome52.json",
+        'dataType': "json",
+        'success': function (data) {
+            json = data;
+        }
+    });
+    return json;
+})();
+
+
+
+
+
+
+
 primeiros = [];
 segundos = [];
+terceiros = [];
+quartos = [];
+quintos = [];
+food = [];
 
 for (var index = 0; index < dataGrafico.length; index++) {
-    primeiros.push(dataGrafico[index].generationBest[0].best1Fitness);
-    segundos.push(dataGrafico[index].generationBest[1].best2Fitness);
+    primeiros.push(dataGrafico[index].firstFitness);
+    segundos.push(dataGrafico[index].secondFitness);
+    terceiros.push(dataGrafico[index].thirdFitness);
+    quartos.push(dataGrafico[index].fourthFitness);
+    quintos.push(dataGrafico[index].fifthFitness);
+    food.push(dataGrafico[index].foodLeft);
     
 }
 
@@ -16,12 +44,12 @@ var chartData = {
         aspect:"spline"
     },
     "scale-x": {
-        values: '0:6000:1',
-        //"zooming":true,
-        //"zoom-to":[0,10]
+        values: '0:20000:1',
+        "zooming":true,
+        "zoom-to":[0,10]
     },
     "scale-y": {
-      values: '300:5300:100',
+      values: '0:5300:100',
   },
     "scroll-x":{
         "bar":{
@@ -34,14 +62,8 @@ var chartData = {
             }
     },
     "crosshairX":{
-      "lineWidth":1,
       "line-color":"#003849",
-      "marker":{
-          "size":4,
-          "type":"circle",
-          "borderColor":"#fff",
-          "borderWidth":1
-      },
+
       "scale-label":{
           "font-color":"#ffffff",
           "background-color":"#003849",
@@ -56,8 +78,6 @@ var chartData = {
           "padding":"5px 10px 5px 10px",
           "border-radius":"5px",
           "alpha":1,
-          "headerText":"Node %scale-key-text<br>",
-          "text":"Geração %kt Fitness %vt"
       }
   },
     title: {
@@ -66,16 +86,34 @@ var chartData = {
     legend: {}, // Creates an interactive legend
     series: [  // Insert your series data here.
         { values: primeiros,
-          text: "Melhor Espécime"
+          "legend-text": "Primeiro",
+          text: "Fitness do primeiro"
         },
         { values: segundos,
-          text: "Segunda Melhor Espécime"
-        }  
+            "legend-text": "Segundo",
+            text: "Fitness do segundo"            
+        },
+        { values: terceiros,
+            "legend-text": "Terceiro",
+            text: "Fitness do terceiro"            
+        },
+        { values: quartos,
+            "legend-text": "Quarto",
+             text: "Fitness do quarto"
+        },
+        { values: quintos,
+            "legend-text": "Quinto",
+            text: "Fitness do quinto"
+        },
+        { values: food,
+            "legend-text": "Comida restante",
+            text: "Comida restante"            
+        },    
     ]
   };
   zingchart.render({ // Render Method[3]
     id: 'chartDiv',
     data: chartData,
-    height: 720,
-    width: "100%"
+    height: 600,
+    width: 800
   });
